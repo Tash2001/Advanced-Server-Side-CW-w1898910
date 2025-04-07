@@ -20,6 +20,14 @@ const db = new sqlite3.Database(dbPath, (err) => {
             password TEXT NOT NULL
         )
         `);
+
+        db.run(`CREATE TABLE IF NOT EXISTS api_keys(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            api_key TEXT UNIQUE NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+            )`);
     });
 });
 

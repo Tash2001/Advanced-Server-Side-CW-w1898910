@@ -6,6 +6,9 @@ const swaggerSpec = require('./swagger');
 const db = require('./src/config/database'); 
 const UserDao = require('./src/dao/userDao')
 const UserService = require('./src/service/userService')
+const crypto = require('crypto'); 
+const fetch = require('node-fetch');
+const checkApiKey = require('./src/middleware/checkApiKey')
 
 const app = express();
 // Middleware to parse JSON
@@ -213,12 +216,74 @@ app.post('/login', (req, res) => {
         console.error(err);
         return res.status(401).json({ message: 'Login failed', error: err.message });
       }
-  
-      res.status(200).json({ message: 'Login successful', user });
+
+      const apiKey = crypto.randomUUID();
+
+      const sql = `INSERT INTO api_keys (user_id, api_key) VALUES(?,?)`;
+      db.run(sql, [user.id, apiKey], function(err){
+
+        if(err){
+          console.err(err);
+          return res.status(500).json({message: 'Failed to generate API Key'});
+        }
+
+        return res.status(200).json({
+
+          message: 'Login successful',
+          user: { id: user.id, name:user.name, email: user.email},
+          api_key: apiKey
+        });
+      });
     });
 });
   
-  
+ /**
+ * @swagger
+ * /country/{name}:
+ *   get:
+ *     summary: Get country info (protected by API key)
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Name of the country to look up
+ *     responses:
+ *       200:
+ *         description: Country details
+ *       401:
+ *         description: Missing or invalid API key
+ */
+app.get('/country/:name', checkApiKey, async (req, res) => {
+  const countryName = req.params.name;
+
+  try {
+    const response = await fetch(`https://restcountries.com/v3.1/name/${countryName}?fullText=true`);
+
+    if (!response.ok) {
+      return res.status(404).json({ message: 'Country not found' });
+    }
+
+    const data = await response.json();
+    const country = data[0];
+
+    // Extract needed fields
+    const result = {
+      name: country.name.common,
+      capital: country.capital?.[0] || 'N/A',
+      currencies: Object.values(country.currencies || {})[0]?.name || 'N/A',
+      languages: Object.values(country.languages || []).join(', ') || 'N/A',
+      flag: country.flags?.png || 'N/A'
+    };
+
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching country info' });
+  }
+});
+
 
 // Start the server
 app.listen(PORT, () => {
