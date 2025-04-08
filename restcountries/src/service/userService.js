@@ -6,11 +6,13 @@ class UserService {
   }
 
   register(user, callback) {
-    // Hash password before storing
-    bcrypt.hash(user.password, 10, (err, hash) => {
-      if (err) return callback(err);
-      user.password = hash;
-      this.userDao.create(user, callback);
+    this.userDao.getByEmail(user.email, (err, existingUser) => {
+      if (existingUser) return callback(new Error('Email already in use'));
+    
+      bcrypt.hash(user.password, 10, (err, hash) => {
+        if (err) return callback(err);
+        this.userDao.create({ ...user, password: hash }, callback);
+      });
     });
   }
 

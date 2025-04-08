@@ -14,7 +14,7 @@ class UserDao{
     }
 
     getById(id, callback){
-        const sql = `SELECT * FROM user WHERE id=?`;
+        const sql = `SELECT * FROM users WHERE id=?`;
         this.db.get(sql, [id], callback);
     }
 
