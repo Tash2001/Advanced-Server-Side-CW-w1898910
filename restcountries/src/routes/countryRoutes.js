@@ -1,7 +1,7 @@
 const express = require('express');
 const fetch = require('node-fetch');
 const checkApiKey = require('../middleware/checkApiKey');
-
+const verifyJWT = require('../middleware/verifyJWT');
 const router = express.Router();
 /**
  * @swagger
@@ -26,7 +26,7 @@ const router = express.Router();
  *         required: true
  *         description: Country name
  *     security:
- *       - ApiKeyAuth: []
+ *        - bearerAuth: []
  *     responses:
  *       200:
  *         description: Country data retrieved
@@ -37,7 +37,9 @@ const router = express.Router();
  *       404:
  *         description: Country not found
  */
-router.get('/:name', checkApiKey, async (req, res) => {
+// router.get('/:name', checkApiKey, async (req, res) => {
+router.get('/:name', verifyJWT, async (req, res) => {
+
   const countryName = req.params.name;
 
   try {

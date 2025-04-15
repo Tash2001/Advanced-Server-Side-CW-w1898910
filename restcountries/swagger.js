@@ -10,26 +10,34 @@ const options = {
     },
     components: {
       securitySchemes: {
-        ApiKeyAuth: {
-          type: 'apiKey',
-          in: 'header',
-          name: 'x-api-key'
+        // ApiKeyAuth: {
+        //   type: 'apiKey',
+        //   in: 'header',
+        //   name: 'x-api-key'
+        // }
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
         }
       }
     },
+    // security: [
+    //   {
+    //     ApiKeyAuth: []
+    //   }
+    // ],
     security: [
-      {
-        ApiKeyAuth: []
-      }
+      { bearerAuth: [] }
     ],
-    
+
     servers: [
       {
         url: 'http://localhost:3000',
       },
     ],
   },
-  apis: ['./src/routes/*.js'], 
+  apis: ['./src/routes/*.js'],
 };
 
 const swaggerSpec = swaggerJSDoc(options);
