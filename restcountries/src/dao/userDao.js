@@ -9,7 +9,7 @@ class UserDao{
     }
 
     getByEmail(email, callback){
-        const sql = `SELECT * FROM users WHERE email = ?`;
+        const sql = `SELECT id, name, email, password, role FROM users WHERE email = ?`;
         this.db.get(sql,[email], callback);
     }
 

@@ -5,7 +5,7 @@ const swaggerSpec = require('./swagger');
 const db = require('./src/config/database'); 
 const userRoutes = require('./src/routes/userRoutes');
 const countryRoutes = require('./src/routes/countryRoutes');
-
+const adminRoutes = require('./src/routes/adminRoutes')
 
 
 const app = express();
@@ -14,6 +14,7 @@ app.use(express.json());
 
 
 const cors = require('cors');
+const verifyJWT = require('./src/middleware/verifyJWT');
 app.use(cors());
 
 // Logger middleware
@@ -41,7 +42,7 @@ app.use((err, req, res, next) => {
     res.status(500).json({ message: 'Something went wrong!', error: err.message });
 });
 
-
+app.use('/admin', verifyJWT,adminRoutes);
 
 // Serve Swagger docs
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));

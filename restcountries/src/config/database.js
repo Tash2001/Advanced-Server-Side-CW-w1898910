@@ -17,7 +17,8 @@ const db = new sqlite3.Database(dbPath, (err) => {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL
+            password TEXT NOT NULL,
+            role TEXT DEFAULT 'user'
         )
         `);
 
@@ -27,7 +28,19 @@ const db = new sqlite3.Database(dbPath, (err) => {
             api_key TEXT UNIQUE NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id)
-            )`);
+            )
+        `);
+                // API usage log table
+    db.run(`
+        CREATE TABLE IF NOT EXISTS usage_log (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL,
+          endpoint TEXT NOT NULL,
+          accessed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+      `);
+  
     });
 });
 

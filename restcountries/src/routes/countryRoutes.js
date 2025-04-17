@@ -38,7 +38,7 @@ const router = express.Router();
  *         description: Country not found
  */
 // router.get('/:name', checkApiKey, async (req, res) => {
-router.get('/:name', verifyJWT, async (req, res) => {
+router.get('/:name', checkApiKey, async (req, res) => {
 
   const countryName = req.params.name;
 

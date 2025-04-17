@@ -17,8 +17,17 @@ function checkApiKey(req, res, next) {
       return res.status(403).json({ message: 'Invalid API key' });
     }
 
-    req.userId = row.user_id; 
-    next();
+    req.user = { id: row.user_id };
+    db.run(
+      'INSERT INTO usage_log (user_id, endpoint) VALUES (?, ?)',
+      [row.user_id, req.originalUrl],
+      (logErr) => {
+        if (logErr) {
+          console.error('Error logging usage:', logErr.message);
+        }
+        next();
+      }
+    );
   });
 }
 
