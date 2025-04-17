@@ -33,32 +33,43 @@ Ensure the following are installed:
 1. **Clone the repository**
 
 ```bash
-https://github.com/Tash2001/Advanced-Server-Side-_CW_w1898910.git
-cd Advanced-Server-Side-_CW_w1898910
-
+https://github.com/Tash2001/Advanced-Server-Side-CW-w1898910.git
+```
+```bash
+cd Advanced-Server-Side-CW-w1898910
 ```
 
-1. **Build and run the application using Docker Compose**
+2. **Build and run the application using Docker Compose**
 
 ```bash
 docker-compose up --build
 
 ```
 
-1. **Access the application**
+3. **Access the application**
 - Frontend: [http://localhost:3000](http://localhost:3000/)
 - Backend: [http://localhost:5000](http://localhost:5000/)
 
 ## API Authentication
 
-The backend requires an API key to be included in the request headers:
+This application uses two levels of authentication to ensure secure access:
+
+1. **JWT-Based Authentication**
+
+Upon successful login, users receive a JWT token.
+```
+Authorization: Bearer <your_token_here>
+```
+2. **API Key-Based Access**
+   
+After logging in, users can generate an API key using the endpoint:
 
 ```
 x-api-key: YOUR_API_KEY_HERE
-
 ```
+- JWT ensures only authenticated users can act on behalf of their session.
+- API Key allows controlled, trackable access to external API routes.
 
-If the API key is missing or invalid, a 401 Unauthorized response will be returned.
 
 ## Database
 
