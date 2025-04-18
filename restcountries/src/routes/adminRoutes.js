@@ -19,14 +19,7 @@ router.get('/users', isAdmin, (req, res) => {
   });
 });
 
-// Get all API keys
-router.get('/keys', isAdmin, (req, res) => {
-  db.all(`SELECT api_keys.api_key, users.email, api_keys.created_at
-          FROM api_keys JOIN users ON api_keys.user_id = users.id`, [], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(rows);
-  });
-});
+
 
 // Get usage logs
 router.get('/logs', isAdmin, (req, res) => {
@@ -37,5 +30,23 @@ router.get('/logs', isAdmin, (req, res) => {
     res.json(rows);
   });
 });
+
+// Get all API keys with usage info
+router.get('/keys', isAdmin, (req, res) => {
+  db.all(`
+    SELECT 
+      api_keys.api_key,
+      users.email,
+      api_keys.usage_count,
+      api_keys.last_used,
+      api_keys.created_at
+    FROM api_keys
+    JOIN users ON api_keys.user_id = users.id
+  `, [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
 
 module.exports = router;

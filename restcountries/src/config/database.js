@@ -4,15 +4,15 @@ const path = require('path');
 // Create or connect to SQLite DB
 const dbPath = path.resolve(__dirname, './db.sqlite');
 const db = new sqlite3.Database(dbPath, (err) => {
-    if (err) {
-        console.error('Could not connect to database', err);
-    } else {
-        console.log('Connected to SQLite database');
-    }
+  if (err) {
+    console.error('Could not connect to database', err);
+  } else {
+    console.log('Connected to SQLite database');
+  }
 
   // Create users table (if not exists)
-    db.serialize(() => {
-        db.run(`
+  db.serialize(() => {
+    db.run(`
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
@@ -22,15 +22,20 @@ const db = new sqlite3.Database(dbPath, (err) => {
         )
         `);
 
-        db.run(`CREATE TABLE IF NOT EXISTS api_keys(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            api_key TEXT UNIQUE NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id)
-            )
-        `);
-                // API usage log table
+    // Create api_keys table (if not exists)
+    db.run(`
+  CREATE TABLE IF NOT EXISTS api_keys (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    api_key TEXT UNIQUE NOT NULL,
+    usage_count INTEGER DEFAULT 0,
+    last_used TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+  )
+`);
+
+    // API usage log table
     db.run(`
         CREATE TABLE IF NOT EXISTS usage_log (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -41,9 +46,10 @@ const db = new sqlite3.Database(dbPath, (err) => {
         )
       `);
   
-    });
+
+  });
 });
 
 
-  
+
 module.exports = db;

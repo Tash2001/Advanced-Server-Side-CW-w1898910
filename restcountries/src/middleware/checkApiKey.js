@@ -25,7 +25,16 @@ function checkApiKey(req, res, next) {
         if (logErr) {
           console.error('Error logging usage:', logErr.message);
         }
-        next();
+        db.run(
+          `UPDATE api_keys SET usage_count = usage_count + 1, last_used = CURRENT_TIMESTAMP WHERE id = ?`,
+          [row.id],
+          (updateErr) => {
+            if (updateErr) {
+              console.error('Error updating API key usage:', updateErr.message);
+            }
+            next();
+          }
+        );
       }
     );
   });

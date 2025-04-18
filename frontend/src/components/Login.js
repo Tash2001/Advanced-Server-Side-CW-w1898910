@@ -4,8 +4,12 @@ import { login } from "../api";
 export default function Login({ onLogin }) {
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    setFieldErrors({});
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,8 +38,15 @@ export default function Login({ onLogin }) {
 
       onLogin();
     } catch (err) {
-      console.error('Login failed:', err);
-      setError(err.response?.data?.message || 'Login failed');
+      if (err.response?.data?.errors) {
+        const newFieldErrors = {};
+        err.response.data.errors.forEach((e) => {
+          newFieldErrors[e.path] = e.msg;
+        });
+        setFieldErrors(newFieldErrors);
+      } else {
+        setError(err.response?.data?.message || 'Login failed');
+      }
     }
   };
 
@@ -45,11 +56,12 @@ export default function Login({ onLogin }) {
         <label className="form-label">Email</label>
         <input
           name="email"
-          className="form-control"
+          className={`form-control ${fieldErrors.email ? 'is-invalid' : ''}`}
           placeholder="Enter email"
           value={form.email}
           onChange={handleChange}
         />
+        {fieldErrors.email && <div className="invalid-feedback">{fieldErrors.email}</div>}
       </div>
 
       <div className="form-group mb-3">
@@ -57,20 +69,21 @@ export default function Login({ onLogin }) {
         <input
           name="password"
           type="password"
-          className="form-control"
+          className={`form-control ${fieldErrors.password ? 'is-invalid' : ''}`}
           placeholder="Enter password"
           value={form.password}
           onChange={handleChange}
         />
+        {fieldErrors.password && <div className="invalid-feedback">{fieldErrors.password}</div>}
       </div>
 
       <div className="text-center mt-5 pt-2 btn-class">
         <button className="btn btn-glow w-100" type="submit">
           Login
         </button>
+        {error && <p className="text-danger text-center mt-3">{error}</p>}
       </div>
 
-      <p className="text-center mt-3 text-danger">{error}</p>
     </form>
   );
 }
