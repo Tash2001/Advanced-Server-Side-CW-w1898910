@@ -6,6 +6,7 @@ const app = express();
 const authRoutes =require('./routers/authRoutes');
 const swaggerUi =require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger')
+const blogRoutes = require('./routers/blogRoutes');
 
 const PORT = process.env.PORT || 5000;
 
@@ -15,6 +16,7 @@ app.use(express.json());
 
 
 app.use('/api/auth', authRoutes);
+app.use('/api/blogs', blogRoutes);
 
 
 // Default route

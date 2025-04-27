@@ -19,5 +19,19 @@ db.run(`
     )
 `);
 
+db.run(`
+    CREATE TABLE IF NOT EXISTS posts(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    country TEXT NOT NULL,
+    dateOfVisit TEXT NOT NULL,
+    userId INTEGER NOT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP<
+    FOREIGN KEY(userId) REFERENCES users(id)
+)
+    `);
+    
+
 
 module.exports =db;
