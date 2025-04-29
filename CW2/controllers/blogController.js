@@ -5,7 +5,7 @@ const {
     fetchPostById,
     updateBlogPost,
     deleteBlogPost,
-    fetchUserPosts
+    fetchuserPosts
   } = require('../services/blogService');
   
   // Controller for creating a blog post
@@ -35,7 +35,7 @@ const {
   
   // Controller for fetching posts created by logged-in user
   const getUserPosts = (req, res) => {
-    fetchUserPosts(req, res);
+    fetchuserPosts(req, res);
   };
   
   module.exports = {

@@ -8,14 +8,15 @@ const createPost = (title,content, country ,dateOfVisit,userId, callback) => {
 };
 
 const getAllPosts = (callback) => {
-    const sql = `SELECT posts.* users.userrname FROM posts
-    JOIN userrs ON posts.userId = users.id
-    ORDER BY createdAt DESC`;
-    
-    db.all(sql, [], (err, rows) => {
-        callback(err, rows);
-    });
-};
+    const sql = `
+      SELECT posts.*, users.username
+      FROM posts
+      JOIN users ON posts.userId = users.id
+      ORDER BY posts.createdAt DESC
+    `;
+    db.all(sql, [], callback);
+  };
+  
 
 const getPostById = (id, callback) => {
     const sql = `SELECT posts.*, users.username FROM posts
@@ -43,8 +44,8 @@ const deletePost = (id, callback) => {
 
 //my post 
 const getPostsUserId = (userId, callback) => {
-    const sql = ` SELECT 8 FROM posts
-    WHERE useerId=?
+    const sql = ` SELECT * FROM posts
+    WHERE userId=?
     ORDER BY createdAt DESC`;
     db.all(sql,[userId], callback);
 };

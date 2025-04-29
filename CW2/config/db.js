@@ -27,7 +27,7 @@ db.run(`
     country TEXT NOT NULL,
     dateOfVisit TEXT NOT NULL,
     userId INTEGER NOT NULL,
-    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP<
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(userId) REFERENCES users(id)
 )
     `);
