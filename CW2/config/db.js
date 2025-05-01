@@ -29,9 +29,18 @@ db.run(`
     userId INTEGER NOT NULL,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(userId) REFERENCES users(id)
-)
-    `);
+    )
+`);
     
-
+db.run(`CREATE TABLE IF NOT EXISTS post_likes(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    userId INTEGER NOT NULL,
+    postId INTEGER NOT NULL,
+    type TEXT CHECK(type IN('like','dislike')),
+    UNIQUE(userId, postId),
+    FOREIGN KEY(userId) REFERENCES users(id),
+    FOREIGN KEY(postId) REFERENCES posts(id)
+)`
+);
 
 module.exports =db;

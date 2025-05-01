@@ -7,6 +7,7 @@ const authRoutes =require('./routers/authRoutes');
 const swaggerUi =require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger')
 const blogRoutes = require('./routers/blogRoutes');
+const likeRoutes = require('./routers/likeRoutes')
 
 const PORT = process.env.PORT || 5000;
 
@@ -25,6 +26,8 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+app.use('/api/posts',likeRoutes);
 
 // Start server
 app.listen(PORT, () => {
