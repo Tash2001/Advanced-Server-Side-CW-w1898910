@@ -50,6 +50,30 @@ const getPostsUserId = (userId, callback) => {
     db.all(sql,[userId], callback);
 };
 
+const searchPosts = (filters, callback)=>{
+    let sql =`
+        SELECT posts.*, users.username
+        FROM posts
+        JOIN users ON posts.userId = users.id
+        WHERE 1=1
+    `;
+    const params =[];
+
+    if (filters.country){
+        sql +=` AND posts.country =? `;
+        params.push(filters.country);
+    }
+
+    if(filters.username){
+        sql += ` AND users.username LIKE ?`;
+        params.push(`%${filters.username}%`);
+    }
+
+    sql += `ORDER BY posts.createdAt DESC`;
+
+    db.all(sql,params,callback);
+};
+
 
 module.exports = {
     createPost,
@@ -57,6 +81,7 @@ module.exports = {
     getPostById,
     updatePost,
     deletePost,
-    getPostsUserId
+    getPostsUserId,
+    searchPosts
 
 };

@@ -5,7 +5,8 @@ const {
     fetchPostById,
     updateBlogPost,
     deleteBlogPost,
-    fetchuserPosts
+    fetchuserPosts,
+    searchPosts: searchPostsService
   } = require('../services/blogService');
   
   // Controller for creating a blog post
@@ -37,6 +38,10 @@ const {
   const getUserPosts = (req, res) => {
     fetchuserPosts(req, res);
   };
+
+  const searchPosts = (req, res)=>{
+    searchPostsService(req,res);
+  };
   
   module.exports = {
     createPost,
@@ -44,6 +49,7 @@ const {
     getPostById,
     updatePostById,
     deletePostById,
-    getUserPosts
+    getUserPosts,
+    searchPosts
   };
   

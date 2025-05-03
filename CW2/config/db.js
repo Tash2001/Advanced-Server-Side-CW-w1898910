@@ -43,4 +43,13 @@ db.run(`CREATE TABLE IF NOT EXISTS post_likes(
 )`
 );
 
+db.run(`
+    CREATE TABLE IF NOT EXISTS followers(
+    if INTEGER PRIMARY KEY AUTOINCREMENT,
+    userId INTEGER NOT NULL,
+    followerId INTEGER NOT NULL,
+    UNIQUE(userId, followerId),
+    FOREIGN KEY(userId) REFERENCES users(id),
+    FOREIGN KEY(followerId) REFERENCES users(id)
+    )`)
 module.exports =db;

@@ -6,7 +6,8 @@ const {
   getPostById,
   updatePostById,
   deletePostById,
-  getUserPosts
+  getUserPosts,
+  searchPosts
 } = require('../controllers/blogController');
 const verifyToken = require('../middleware/authMiddleware'); 
 
@@ -155,5 +156,36 @@ router.delete('/:id', verifyToken, deletePostById);
  *         description: Returns a list of user's blog posts
  */
 router.get('/user/myposts', verifyToken, getUserPosts);
+/**
+ * @swagger
+ * /api/blogs/search:
+ *   get:
+ *     summary: Search blog posts by country or username
+ *     tags: [Blogs]
+ *     parameters:
+ *       - in: query
+ *         name: country
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Filter by country name
+ *       - in: query
+ *         name: user
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Filter by username
+ *     responses:
+ *       200:
+ *         description: List of matching blog posts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ */
+router.get('/search', searchPosts);
+
 
 module.exports = router;

@@ -4,7 +4,8 @@ const {
     getPostById,
     updatePost,
     deletePost,
-    getPostsUserId
+    getPostsUserId,
+    searchPosts:searchPostsDao
   } = require('../daos/blogDao');
 
 const createBlogPost = (req,res) => {
@@ -72,12 +73,27 @@ const fetchuserPosts = (req,res) => {
     });
 };
 
+const searchPosts  = (req, res) =>{
+    const {country, user : username} = req.query;
+
+    const filters = {
+        country: country || null,
+        username: username || null
+    };
+
+    searchPostsDao(filters, (err,posts)=>{
+        if (err) return res.status(500).json({error:err.message});
+        res.json(posts);
+    });
+}
+
 module.exports={
     createBlogPost,
     fetchAllPosts,
     fetchPostById,
     updateBlogPost,
     deleteBlogPost,
-    fetchuserPosts
+    fetchuserPosts,
+    searchPosts
 
 };
