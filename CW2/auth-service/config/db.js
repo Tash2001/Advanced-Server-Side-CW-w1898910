@@ -3,10 +3,10 @@ const path = require('path');
 
 const db = new sqlite3.Database(path.join(__dirname, '..','auth.db'),(err)=>{
     if(err){
-        console.error('Error connecting to db:',err.message);
+        console.error('Error connecting to auth db:',err.message);
 
     }else{
-        console.log('connecting to the db');
+        console.log('connecting to the auth db');
     }
 });
 
