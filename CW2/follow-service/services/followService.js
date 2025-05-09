@@ -72,7 +72,7 @@ const getFollowingFeed = async (userId, callback) => {
       const followedUserId = follow.userId;
 
       try {
-        const res = await axios.get(`http://localhost:5002/api/blogs/user/${followedUserId}`);
+        const res = await axios.get(`http://blog-service:5002/api/blogs/user/${followedUserId}`);
         if (res.status === 200) {
           feed.push(...res.data);
         }

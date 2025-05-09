@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - JWT_SECRET=traveltalesSuperSecretKey
+    volumes:
+      - ./auth-service/auth.db:/app/auth.db
+    restart: always
+
+  blog-service:
+    build: ./blog-service
+    ports:
+      - "5002:5002"
+    environment:
+      - PORT=5002
+      - JWT_SECRET=traveltalesSuperSecretKey
+    volumes:
+      - ./blog-service/blog.db:/app/blog.db
+    restart: always
+
+  like-service:
+    build: ./like-service
+    ports:
+      - "5003:5003"
+    environment:
+      - PORT=5003
+      - JWT_SECRET=traveltalesSuperSecretKey
+    volumes:
+      - ./like-service/postLikes.db:/app/postLikes.db
+    restart: always
+
+  follow-service:
+    build: ./follow-service
+    ports:
+      - "5004:5004"
+    environment:
+      - PORT=5004
+      - JWT_SECRET=traveltalesSuperSecretKey
+    volumes:
+      - ./follow-service/follow.db:/app/follow.db
+    restart: always
+
+  country-service:
+    build: ./country-service
+    ports:
+      - "5005:5005"
+    environment:
+      - PORT=5005
+    restart: always

@@ -1,6 +1,6 @@
-const { createUser, findUserByEmail } = require("../DAOs/userDao");
+const { createUser, findUserByEmail } = require("../daos/userDao");
 const { hashPassword, comparePassword } = require("../utils/hashUtil");
-const { generatetoken } = require("../utils/jwtutil");
+const { generatetoken } = require("../utils/jwtUtil");
 
 
 const register = (req, res)=>{

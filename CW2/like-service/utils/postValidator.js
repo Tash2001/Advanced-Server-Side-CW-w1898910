@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 const postExists = async (postId) => {
-  const url = `http://localhost:5002/api/blogs/${postId}`;
+  const url = `http://blog-service:5002/api/blogs/${postId}`;
   let attempts = 0;
   const maxRetries = 3;
 
