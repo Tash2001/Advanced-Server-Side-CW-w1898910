@@ -3,6 +3,7 @@ const {
     unfollowUser,
     getFollowers,
     getFollowing,
+    checkFollowExists
     // getFollowedPosts
   } = require('../daos/followDao');
   const axios = require('axios');
@@ -61,6 +62,20 @@ const {
   //   });
   // };
 
+// Service to check if current user follows target user
+const isFollowing = (req, res) => {
+  const followerId = req.user.id;
+  const userId = parseInt(req.params.id);
+
+  if (userId === followerId) {
+    return res.json({ isFollowing: false });  // can't follow yourself
+  }
+
+  checkFollowExists(userId, followerId, (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ isFollowing: result });
+  });
+};
 
 const getFollowingFeed = async (userId, callback) => {
   getFollowing(userId, async (err, followings) => {
@@ -98,6 +113,7 @@ module.exports = {
     unfollow,
     getFollowersList,
     getFollowingList,
-    getFollowingFeed
+    getFollowingFeed,
+    isFollowing
   };
   

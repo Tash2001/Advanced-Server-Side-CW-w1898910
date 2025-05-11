@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { handleLike, handleDislike, handleGetLikes } = require('../controllers/likeController');
+const { handleLike, handleDislike, handleGetLikes, getUserVote } = require('../controllers/likeController');
 const verifyToken = require('../middleware/authMiddleware');
 
 /**
@@ -71,5 +71,8 @@ router.post('/:id/dislike', verifyToken, handleDislike);
  *         description: Like/dislike count
  */
 router.get('/:id', handleGetLikes);
+
+router.get('/:id/vote', verifyToken, getUserVote);
+
 
 module.exports = router;

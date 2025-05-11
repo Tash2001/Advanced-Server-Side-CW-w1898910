@@ -30,6 +30,13 @@ const getFollowing = (userId, callback) => {
   db.all(sql, [userId], callback);
 };
 
+const checkFollowExists = (targetUserId, followerId, callback) => {
+  const sql = `SELECT 1 FROM followers WHERE userId = ? AND followerId = ?`;
+  db.get(sql, [targetUserId, followerId], (err, row) => {
+    callback(err, !!row);  // returns true or false
+  });
+};
+
 // // Get posts from followed users
 // const getFollowedPosts = (userId, callback) => {
 //   const sql = `
@@ -49,5 +56,6 @@ module.exports = {
   unfollowUser,
   getFollowers,
   getFollowing,
+  checkFollowExists
   // getFollowedPosts
 };

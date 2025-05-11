@@ -1,4 +1,4 @@
-const { insertLike, getLikeCounts } = require("../daos/likeDao");
+const { insertLike, getLikeCounts, getUserVoteForPost } = require("../daos/likeDao");
 const {postExists} =require('../utils/postValidator')
 
 const likePost = async (req, res)=>{
@@ -39,8 +39,16 @@ const getPostLikes = (req,res)=> {
     });
 };
 
+const fetchUserVote = (userId, postId, callback) => {
+  getUserVoteForPost(userId, postId, (err, row) => {
+    if (err) return callback(err);
+    callback(null, row ? row.type : null);
+  });
+};
+
 module.exports={
     likePost,
     dislikePost,
-    getPostLikes
+    getPostLikes,
+    fetchUserVote
 }

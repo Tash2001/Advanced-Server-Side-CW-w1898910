@@ -5,7 +5,8 @@ const {
   unfollowUser,
   getFollowers,
   getFollowings,
-  getFollowingPosts
+  getFollowingPosts,
+  isFollowingUser
 } = require('../controllers/followController');
 const verifyToken = require('../middleware/authMiddleware');
 
@@ -91,6 +92,9 @@ router.get('/followers/:id', getFollowers);
  *         description: List of followings
  */
 router.get('/following/:id', getFollowings);
+
+router.get('/isfollowing/:id', verifyToken, isFollowingUser);
+
 
 /**
  * @swagger

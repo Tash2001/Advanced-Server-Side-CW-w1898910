@@ -31,7 +31,16 @@ const getLikeCounts = (postId, callback)=>{
    
 };
 
+const getUserVoteForPost = (userId, postId, callback) => {
+  const sql = `
+    SELECT type FROM post_likes
+    WHERE postId = ? AND userId = ?
+  `;
+  db.get(sql, [postId, userId], callback);
+};
+
 module.exports = {
     insertLike,
-    getLikeCounts
+    getLikeCounts,
+    getUserVoteForPost
 }

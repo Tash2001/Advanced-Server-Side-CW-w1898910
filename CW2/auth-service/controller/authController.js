@@ -1,3 +1,3 @@
-const { register, login} = require('../services/authService');
+const { register, login , username} = require('../services/authService');
 
-module.exports = {register,login};
+module.exports = {register,login, username};

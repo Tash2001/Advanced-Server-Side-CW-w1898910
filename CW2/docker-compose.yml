@@ -52,3 +52,14 @@ services:
     environment:
       - PORT=5005
     restart: always
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3001:3000"
+    depends_on:
+      - auth-service
+      - blog-service
+      - like-service
+      - follow-service
+      - country-service
