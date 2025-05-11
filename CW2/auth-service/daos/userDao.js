@@ -17,5 +17,9 @@ const findusername = (userId, callback) => {
   db.get(sql, [userId], callback);
 };
 
+const findUserByUsername = (username, callback) => {
+  const sql = `SELECT id, username FROM users WHERE username = ?`;
+  db.get(sql, [username],callback);
+};
 
-module.exports = {createUser, findUserByEmail , findusername};
+module.exports = {createUser, findUserByEmail , findusername , findUserByUsername};

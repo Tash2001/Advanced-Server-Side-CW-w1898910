@@ -5,7 +5,7 @@ const {
     updatePost,
     deletePost,
     getPostsUserId,
-    searchPosts: searchPostsDao
+    searchPosts
 } = require('../daos/blogDao');
 const axios = require('axios');
 
@@ -85,28 +85,44 @@ const deleteBlogPost = (req, res) => {
 const fetchuserPosts = (req, res) => {
     const userId = req.user?.id || req.params.id;
 
-    getPostsUserId(userId, (err, posts) => {
+    getPostsUserId(userId, async (err, posts) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.json(posts);
+
+        const enrichedPosts = await Promise.all(
+            posts.map(async (post) => {
+                const username = await getUsernameById(post.userId);
+                return { ...post, username };
+            })
+        );
+
+        res.json(enrichedPosts);
     });
 };
 
 
+const searchBlogPosts = async (filters, callback) => {
+  try {
+    let userId = null;
 
+    console.log("Searching with filters:", filters);
 
-const searchPosts = (req, res) => {
-    const { country, user: username } = req.query;
+    if (filters.username) {
+      // Make HTTP call to auth-service to get user info
+      const res = await axios.get(`http://auth-service:5001/api/auth/users/username/${filters.username}`);
+      if (!res.data || !res.data.id) return callback(null, []);
+      userId = res.data.id;
+    }
 
-    const filters = {
-        country: country || null,
-        username: username || null
+    const updatedFilters = {
+      country: filters.country || null,
+      userId: userId
     };
 
-    searchPostsDao(filters, (err, posts) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json(posts);
-    });
-}
+    searchPosts(updatedFilters, callback);
+  } catch (err) {
+    callback(err);
+  }
+};
 
 module.exports = {
     createBlogPost,
@@ -115,6 +131,6 @@ module.exports = {
     updateBlogPost,
     deleteBlogPost,
     fetchuserPosts,
-    searchPosts
+    searchBlogPosts
 };
 

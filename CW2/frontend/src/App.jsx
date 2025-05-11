@@ -8,6 +8,8 @@ import Write from './pages/writeBlog';
 import MyPosts from './pages/MyPosts';
 import EditBlog from './pages/EditBlog';
 import { jwtDecode } from 'jwt-decode';
+import FollowingFeed from './pages/FollowingFeed';
+import CountryInfo from './pages/CountryInfo';
 
 
 function App() {
@@ -57,6 +59,9 @@ function App() {
         <Route path="/write" element={<Write />} />
         <Route path='/myposts' element={<MyPosts />} />
         <Route path='/edit/:id' element={<EditBlog />} />
+        <Route path="/feed" element={<FollowingFeed />} />
+        <Route path="/country/:name" element={<CountryInfo />} />
+
       </Routes>
     </Router>
   );

@@ -7,7 +7,7 @@ const {
     deleteBlogPost,
     fetchuserPosts,
     
-    searchPosts: searchPostsService
+    searchBlogPosts
   } = require('../services/blogService');
   
   // Controller for creating a blog post
@@ -41,9 +41,18 @@ const {
   
 
 
-  const searchPosts = (req, res)=>{
-    searchPostsService(req,res);
+const searchPosts = (req, res) => {
+  const filters = {
+    country: req.query.country,
+    username: req.query.user
   };
+
+  searchBlogPosts(filters, (err, posts) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(posts);
+  });
+};
+
   
   module.exports = {
     createPost,

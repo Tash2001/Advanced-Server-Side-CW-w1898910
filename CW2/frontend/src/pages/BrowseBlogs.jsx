@@ -4,6 +4,8 @@ import Select from 'react-select';
 import './BrowseBlogs.css';
 import FollowButton from '../components/FollowButton';
 import LikeDislike from '../components/LikeDislike';
+import { Link } from 'react-router-dom';
+
 
 const BrowseBlogs = ({ isLoggedIn, myusername }) => {
     const [countries, setCountries] = useState([]);
@@ -11,7 +13,6 @@ const BrowseBlogs = ({ isLoggedIn, myusername }) => {
     const [username, setUsername] = useState('');
     const [results, setResults] = useState([]);
     const [error, setError] = useState('');
-    const [likesData, setLikesData] = useState({});
 
 
     // Fetch countries and all posts on first load
@@ -34,25 +35,6 @@ const BrowseBlogs = ({ isLoggedIn, myusername }) => {
             setError('Failed to load blogs');
         }
     };
-
-    useEffect(() => {
-        const fetchLikes = async () => {
-            const likeMap = {};
-            for (const post of results) {
-                try {
-                    const res = await axios.get(`http://localhost:5003/api/likes/${post.id}`);
-                    likeMap[post.id] = res.data;
-                } catch {
-                    likeMap[post.id] = { likes: 0, dislikes: 0 };
-                }
-            }
-            setLikesData(likeMap);
-        };
-
-        if (results.length > 0) {
-            fetchLikes();
-        }
-    }, [results]);
 
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -136,7 +118,13 @@ const BrowseBlogs = ({ isLoggedIn, myusername }) => {
                     results.map(post => (
                         <div key={post.id} className="post-card">
                             <h3>{post.title}</h3>
-                            <p><strong>Country:</strong> {post.country}</p>
+                            <p>
+                                <strong>Country:</strong>{' '}
+                                <Link to={`/country/${encodeURIComponent(post.country)}`} className="country-link">
+                                    {post.country}
+                                </Link>
+                            </p>
+
                             {isLoggedIn ? (<p>
                                 <strong>Author:</strong> {post.username}
                                 {post.username !== myusername && <FollowButton userId={post.userId} />}
@@ -144,8 +132,6 @@ const BrowseBlogs = ({ isLoggedIn, myusername }) => {
                             ) : (<p><strong>Author:</strong> {post.username}</p>)}
 
                             <p>{post.content}</p>
-                            <p><strong>Likes:</strong> {likesData[post.id]?.likes || 0}</p>
-                            <p><strong>Dislikes:</strong> {likesData[post.id]?.dislikes || 0}</p>
                             <LikeDislike postId={post.id} />
 
 

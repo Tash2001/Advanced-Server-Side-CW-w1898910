@@ -50,27 +50,23 @@ const getPostsUserId = (userId, callback) => {
     db.all(sql,[userId], callback);
 };
 
-const searchPosts = (filters, callback)=>{
-    let sql =`
-        SELECT *
-        FROM posts
-        WHERE 1=1
-    `;
-    const params =[];
+const searchPosts = (filters, callback) => {
+  let sql = `SELECT * FROM posts WHERE 1=1`;
+  const params = [];
 
-    if (filters.country) {
-        sql += ` AND country = ?`;
-        params.push(filters.country);
-    }
-    
-    if (filters.username) {
-        sql += ` AND userId LIKE ?`; 
-        params.push(`%${filters.username}%`);
-    }
-    
-    sql += ` ORDER BY createdAt DESC`;
+  if (filters.country) {
+    sql += ` AND country = ?`;
+    params.push(filters.country);
+  }
 
-    db.all(sql,params,callback);
+  if (filters.userId) {
+    sql += ` AND userId = ?`;
+    params.push(filters.userId);
+  }
+
+  sql += ` ORDER BY createdAt DESC`;
+
+  db.all(sql, params, callback);
 };
 
 

@@ -1,0 +1,20 @@
+.country-info {
+  background-color: #121212;
+  color: #E0E0E0;
+  padding: 20px;
+  max-width: 600px;
+  margin: 40px auto;
+  border: 1px solid #444;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.flag {
+  width: 150px;
+  margin: 20px 0;
+  border-radius: 5px;
+}
+
+.error {
+  color: red;
+}
