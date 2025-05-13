@@ -7,9 +7,10 @@ const {
   updatePostById,
   deletePostById,
   getUserPosts,
-  searchPosts
+  searchPosts, getBlogsbyCountry,
+  searchBlogByUsername,
 } = require('../controllers/blogController');
-const verifyToken = require('../middleware/authMiddleware'); 
+const verifyToken = require('../middleware/authMiddleware');
 
 /**
  * @swagger
@@ -206,6 +207,11 @@ router.get('/search', searchPosts);
  *         description: List of posts created by the user
  */
 router.get('/user/:id', getUserPosts);
+
+router.get('/country/:country', getBlogsbyCountry);
+
+router.get('/username/:username', searchBlogByUsername);
+
 
 
 module.exports = router;

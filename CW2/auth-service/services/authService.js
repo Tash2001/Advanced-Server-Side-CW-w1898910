@@ -1,4 +1,4 @@
-const { createUser, findUserByEmail, findusername , findUserByUsername} = require("../daos/userDao");
+const { createUser, findUserByEmail, findusername, findUserByUsername } = require("../daos/userDao");
 const { hashPassword, comparePassword } = require("../utils/hashUtil");
 const { generatetoken } = require("../utils/jwtUtil");
 
@@ -50,4 +50,6 @@ const getUserByUsername = (req, res) => {
   });
 };
 
-module.exports = { register, login, username , getUserByUsername };
+
+
+module.exports = { register, login, username, getUserByUsername };

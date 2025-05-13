@@ -5,7 +5,8 @@ const {
     updatePost,
     deletePost,
     getPostsUserId,
-    searchPosts
+    searchPosts,
+    getPostByCountry,
 } = require('../daos/blogDao');
 const axios = require('axios');
 
@@ -99,29 +100,61 @@ const fetchuserPosts = (req, res) => {
     });
 };
 
+const fetchCountryPosts = (req, res) => {
+    const country = req.params.country;
+
+    getPostByCountry(country, async (err, posts) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        const enrichedPosts = await Promise.all(
+            posts.map(async (post) => {
+                const username = await getUsernameById(post.userId);
+                return { ...post, username };
+            })
+        );
+        res.json(enrichedPosts);
+
+    });
+
+}
+
+const searchBlogByUsername = async (req, res) => {
+    const username = req.params.username;
+     const id = await axios.get(`http://auth-service:5001/api/auth/users/username/${username}`);
+            if (!id.data || !id.data.id) return callback(null, []);
+            userId = id.data.id;
+
+    getPostsUserId(userId, (err, posts) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!posts) return res.status(404).json({ error: 'Post not Found' });
+        res.json(posts);
+
+    });
+
+}
 
 const searchBlogPosts = async (filters, callback) => {
-  try {
-    let userId = null;
+    try {
+        let userId = null;
 
-    console.log("Searching with filters:", filters);
+        console.log("Searching with filters:", filters);
 
-    if (filters.username) {
-      // Make HTTP call to auth-service to get user info
-      const res = await axios.get(`http://auth-service:5001/api/auth/users/username/${filters.username}`);
-      if (!res.data || !res.data.id) return callback(null, []);
-      userId = res.data.id;
+        if (filters.username) {
+            // Make HTTP call to auth-service to get user info
+            const res = await axios.get(`http://auth-service:5001/api/auth/users/username/${filters.username}`);
+            if (!res.data || !res.data.id) return callback(null, []);
+            userId = res.data.id;
+        }
+
+        const updatedFilters = {
+            country: filters.country || null,
+            userId: userId
+        };
+
+        searchPosts(updatedFilters, callback);
+    } catch (err) {
+        callback(err);
     }
-
-    const updatedFilters = {
-      country: filters.country || null,
-      userId: userId
-    };
-
-    searchPosts(updatedFilters, callback);
-  } catch (err) {
-    callback(err);
-  }
 };
 
 module.exports = {
@@ -131,6 +164,9 @@ module.exports = {
     updateBlogPost,
     deleteBlogPost,
     fetchuserPosts,
-    searchBlogPosts
+    searchBlogPosts,
+    fetchCountryPosts,
+    searchBlogByUsername
+
 };
 

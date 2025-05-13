@@ -6,8 +6,9 @@ const {
     updateBlogPost,
     deleteBlogPost,
     fetchuserPosts,
-    
-    searchBlogPosts
+    searchBlogByUsername,
+    searchBlogPosts,
+    fetchCountryPosts
   } = require('../services/blogService');
   
   // Controller for creating a blog post
@@ -38,7 +39,10 @@ const {
   const getUserPosts = (req, res) => {
     fetchuserPosts(req, res);
   };
-  
+
+  const getBlogsbyCountry = (req, res)=>{
+    fetchCountryPosts(req,res);
+  }
 
 
 const searchPosts = (req, res) => {
@@ -62,6 +66,8 @@ const searchPosts = (req, res) => {
     deletePostById,
     fetchuserPosts,
     getUserPosts,   
-    searchPosts
+    searchPosts,
+    getBlogsbyCountry,
+    searchBlogByUsername
   };
   

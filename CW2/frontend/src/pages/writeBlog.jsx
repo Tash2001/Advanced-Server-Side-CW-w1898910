@@ -75,6 +75,28 @@ const WriteBlog = () => {
           value={countries.find(c => c.value === form.country)}
           onChange={handleCountryChange}
           isClearable
+          styles={{
+            control: (base) => ({
+              ...base,
+              backgroundColor: '#1e1e1e',
+              borderColor: '#444',
+              color: '#E0E0E0',
+            }),
+            singleValue: (base) => ({
+              ...base,
+              color: '#E0E0E0',
+            }),
+            menu: (base) => ({
+              ...base,
+              backgroundColor: '#1e1e1e',
+              color: '#E0E0E0',
+            }),
+            option: (base, state) => ({
+              ...base,
+              backgroundColor: state.isFocused ? '#333' : '#1e1e1e',
+              color: '#E0E0E0',
+            }),
+          }}
         />
         <button type="submit">Submit</button>
       </form>

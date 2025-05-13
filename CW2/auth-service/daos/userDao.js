@@ -22,4 +22,5 @@ const findUserByUsername = (username, callback) => {
   db.get(sql, [username],callback);
 };
 
+
 module.exports = {createUser, findUserByEmail , findusername , findUserByUsername};

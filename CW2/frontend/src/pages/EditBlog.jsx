@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Select from 'react-select';
 import { useParams, useNavigate } from 'react-router-dom';
-import './WriteBlog.css'; 
+import './WriteBlog.css';
 
 const EditBlog = () => {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
 
@@ -87,6 +87,28 @@ const EditBlog = () => {
           value={countries.find(c => c.value === form.country)}
           onChange={handleCountryChange}
           isClearable
+          styles={{
+            control: (base) => ({
+              ...base,
+              backgroundColor: '#1e1e1e',
+              borderColor: '#444',
+              color: '#E0E0E0',
+            }),
+            singleValue: (base) => ({
+              ...base,
+              color: '#E0E0E0',
+            }),
+            menu: (base) => ({
+              ...base,
+              backgroundColor: '#1e1e1e',
+              color: '#E0E0E0',
+            }),
+            option: (base, state) => ({
+              ...base,
+              backgroundColor: state.isFocused ? '#333' : '#1e1e1e',
+              color: '#E0E0E0',
+            }),
+          }}
         />
         <button type="submit">Update</button>
       </form>
