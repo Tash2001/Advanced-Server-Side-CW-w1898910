@@ -1,132 +1,167 @@
-# REST Countries API System
+# TravelTales – Microservices-Based Blogging Platform
 
-This project is developed as part of the Advanced Server-Side coursework. It is a full-stack application consisting of a Node.js backend and a React.js frontend. Both components are containerized using Docker and orchestrated via Docker Compose. The backend provides a RESTful API with API key-based access control and request logging, while the frontend interacts with the API and provides a user interface.
+TravelTales is a full-stack, microservices-based application built using Node.js, React.js, Docker, and SQLite. The platform allows users to register, write, browse, like/dislike, and follow travel blogs, with real-time search and pagination.
+
+This project was developed as part of the Advanced Server-Side Development coursework.
+
+---
 
 ## Technologies Used
 
 - Node.js (Express)
-- React.js
-- SQLite
+- React.js (with React Router)
+- SQLite (per microservice)
 - Docker & Docker Compose
+- JWT (JSON Web Token) Authentication
+- RESTCountries API v3.1
+
+---
 
 ## Features
 
--  User registration & login with JWT authentication
--  API key generation for secure access to endpoints
--  Search any country using [https://restcountries.com](https://restcountries.com)
--  Usage logs and API key tracking (admin-only)
--  Input validation with express-validator
--  Admin panel (view users, keys, logs)
--  Dockerized full-stack setup
--  JWT expiry + session auto logout
+- User Registration & Login  & Reset password
+- JWT-secured Routes  
+- Blog Post Creation, Editing & Deletion  
+- Like/Dislike System (1 vote per post per user)  
+- Follow/Unfollow System with Feed Page  
+- Search by Country and Username  
+- Country Metadata with Flags & Currency  
+- Swagger for backend testing 
+- Fully Dockerized Setup  
+- Auto Logout on JWT Expiry  
+- Responsive, Dark-themed Frontend UI
+
+---
+
+## Microservice Architecture
+
+| Service Name      | Port  | Role                                 |
+|-------------------|-------|--------------------------------------|
+| `auth-service`    | 5001  | User registration, login, JWT auth   |
+| `blog-service`    | 5002  | Blog CRUD & search endpoints         |
+| `like-service`    | 5003  | Like/dislike tracking per user/post  |
+| `follow-service`  | 5004  | Follower system & feed               |
+| `country-service` | 5005  | Fetch countries using RESTCountries  |
+| `frontend`        | 3001  | React.js-based UI                    |
+
+Each service has its own SQLite database, mounted as a volume and persistent across restarts.
+
+---
 
 ## Project Structure
 
 ```
 project-root/
 │
-├── restcountries/        # Backend (Node.js + Express)
-├── frontend/             # Frontend (React)
-├── docker-compose.yml    # Docker Compose configuration
-└── README.md             # Project documentation
-
+├── auth-service/       # JWT, login, user DB
+├── blog-service/       # Blog CRUD operations
+├── like-service/       # Post likes/dislikes
+├── follow-service/     # Follow/unfollow and feed
+├── country-service/    # RESTCountries API integration
+├── frontend/           # React.js frontend
+├── docker-compose.yml  # Service definitions
+└── README.md           # You are here!
 ```
 
-## Prerequisites
-
-Ensure the following are installed:
-
-- Docker Desktop - https://www.docker.com/products/docker-desktop/ 
-- Git - https://git-scm.com/downloads/win
+---
 
 ## Setup Instructions
 
-1. **Clone the repository**
+### 1. Clone the Repository
 
 ```bash
-https://github.com/Tash2001/Advanced-Server-Side-CW-w1898910.git
-```
-```bash
+git clone https://github.com/Tash2001/Advanced-Server-Side-CW-w1898910.git
 cd Advanced-Server-Side-CW-w1898910
+cd CW2
 ```
 
-2. **Build and run the application using Docker Compose**
+### 2. Start the Services
 
 ```bash
 docker-compose up --build
-
 ```
 
-3. **Access the application**
-- Frontend: [http://localhost:3000](http://localhost:3000/)
-- Backend: [http://localhost:5000](http://localhost:5000/)
+### 3. Access the Application
 
-## API Authentication
+| Component    | URL                     |
+|--------------|--------------------------|
+| Frontend     | http://localhost:3001    |
+| Auth API     | http://localhost:5001    |
+| Blog API     | http://localhost:5002    |
+| Like API     | http://localhost:5003    |
+| Follow API   | http://localhost:5004    |
+| Country API  | http://localhost:5005    |
 
-This application uses two levels of authentication to ensure secure access:
+---
 
-1. **JWT-Based Authentication**
+## Authentication
 
-Upon successful login, users receive a JWT token.
+### JWT Token
+
+On login or registration, a JWT token is returned and stored in local storage.
+
+Example header:
 ```
-Authorization: Bearer <your_token_here>
+Authorization: Bearer <your_jwt_token>
 ```
-2. **API Key-Based Access**
-   
-After logging in, users can generate an API key using the endpoint:
 
+User actions like posting blogs, liking, or following require a valid JWT. The system also handles auto logout on token expiry.
+
+---
+
+## Country Metadata Integration
+
+Country metadata is pulled from [RESTCountries API](https://restcountries.com/v3.1), including:
+
+- Country name
+- Capital
+- Currency
+- Flag
+- Language
+
+---
+
+## Docker Notes
+
+### Rebuild Individual Services
+
+```bash
+docker-compose build auth-service
+docker-compose build frontend
 ```
-x-api-key: YOUR_API_KEY_HERE
-```
-- JWT ensures only authenticated users can act on behalf of their session.
-- API Key allows controlled, trackable access to external API routes.
 
-
-## Database
-
-- The backend uses SQLite.
-- The database file is stored at `restcountries/src/config/db.sqlite`.
-- The file is mounted via Docker volumes and persists across container restarts.
-
-## Docker Commands
-
-To stop all running services:
+### Stop All Services
 
 ```bash
 docker-compose down
-
 ```
 
-To rebuild only the backend or frontend services:
+### Mounted Volumes
 
-```bash
-docker-compose build backend
-docker-compose build frontend
+Each service uses a persistent volume for its database:
 
+```yaml
+volumes:
+  - ./auth-service/auth.db:/app/auth.db
 ```
-##  Admin Access
 
-To access the admin panel, log in with:
+---
 
-- **Email**: `admin@gmail.com`
-- **Password**: `admin123`
+## Security Justification
 
-Ensure that this user has `"role": "admin"` in the `users` table.
+| Feature            | Justification                                                  |
+|--------------------|-----------------------------------------------------------------|
+| JWT Tokens         | Session-based security with expiry and auto logout             |
+| Hashed Passwords   | Passwords hashed using bcrypt before storage                   |
+| API Isolation      | Each microservice is isolated and uses internal Docker DNS     |
+| Request Headers    | Secure transmission using headers, not query parameters        |
+| SQL Safety         | All SQL queries are parameterized to prevent SQL injection     |
 
-The admin panel allows:
-- Viewing API usage logs
-- Viewing API keys
-- Viewing all registered users
-
-## Notes
-
-- Ensure Docker Desktop is running before executing any Docker commands.
-- If Docker services fail to start, check WSL 2 and virtualization settings on your system.
+---
 
 ## Author
 
-Tashini Maleesha
-
-University of Westminster
-
-w1898910
+**Tashini Maleesha**  
+University of Westminster  
+Student ID: w1898910  
+Module: 6COSC022W – Advanced Server-Side Web Development
