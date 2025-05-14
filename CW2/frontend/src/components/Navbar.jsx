@@ -14,7 +14,7 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
     <nav className="navbar">
       <h2 className="navbar-logo">TravelTales</h2>
       <div className="navbar-links">
-        <Link to="/posts" className="navbar-link">Blogs</Link>
+        <Link to="/posts" className="navbar-link">Home</Link>
         {isLoggedIn ? (
           <>
             <Link className="navbar-link" to="/feed">Feed</Link>

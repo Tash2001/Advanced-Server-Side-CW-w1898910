@@ -33,23 +33,9 @@ const getFollowing = (userId, callback) => {
 const checkFollowExists = (targetUserId, followerId, callback) => {
   const sql = `SELECT 1 FROM followers WHERE userId = ? AND followerId = ?`;
   db.get(sql, [targetUserId, followerId], (err, row) => {
-    callback(err, !!row);  // returns true or false
+    callback(err, !!row);  
   });
 };
-
-// // Get posts from followed users
-// const getFollowedPosts = (userId, callback) => {
-//   const sql = `
-//     SELECT posts.*, users.username
-//     FROM posts
-//     JOIN users ON posts.userId = users.id
-//     WHERE userId IN (
-//       SELECT userId FROM followers WHERE followerId = ?
-//     )
-//     ORDER BY posts.createdAt DESC
-//   `;
-//   db.all(sql, [userId], callback);
-// };
 
 module.exports = {
   followUser,

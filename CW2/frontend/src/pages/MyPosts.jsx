@@ -2,16 +2,30 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './MyPosts.css';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import FollowerModal from '../components/FollowerModel';
+import FollowingModal from '../components/FollowingModel';
+
+
 
 const MyPosts = () => {
-  const [posts, setPosts] = useState([]);
-  const [followers, setFollowers] = useState(0);
-  const [following, setFollowing] = useState(0);
-  const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
-  const token = localStorage.getItem('token');
-  const userId = JSON.parse(atob(token.split('.')[1]))?.id;
-  const navigate = useNavigate();
+    const [posts, setPosts] = useState([]);
+    const [followers, setFollowers] = useState(0);
+    const [following, setFollowing] = useState(0);
+    const [error, setError] = useState('');
+    const [message, setMessage] = useState('');
+    const token = localStorage.getItem('token');
+    const userId = JSON.parse(atob(token.split('.')[1]))?.id;
+    const navigate = useNavigate();
+    const [showFollowers, setShowFollowers] = useState(false);
+    const [showFollowing, setShowFollowing] = useState(false);
+    const [followerList, setFollowerList] = useState([]);
+    const [followingList, setFollowingList] = useState([]);
+    const [showReset, setShowReset] = useState(false);
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [resetMessage, setResetMessage] = useState('');
+
 
     const fetchPosts = () => {
         axios
@@ -23,17 +37,29 @@ const MyPosts = () => {
 
     };
 
-    const fetchFollowStats = () => {
-    axios
-      .get(`http://localhost:5004/api/follow/followers/${userId}`)
-      .then((res) => setFollowers(res.data.length))
-      .catch(() => setFollowers(0));
+    const openFollowers = async () => {
+        const res = await axios.get(`http://localhost:5004/api/follow/users/followers/${userId}`);
+        setFollowerList(res.data);
+        setShowFollowers(true);
+    };
 
-    axios
-      .get(`http://localhost:5004/api/follow/following/${userId}`)
-      .then((res) => setFollowing(res.data.length))
-      .catch(() => setFollowing(0));
-  };
+    const openFollowing = async () => {
+        const res = await axios.get(`http://localhost:5004/api/follow/users/following/${userId}`);
+        setFollowingList(res.data);
+        setShowFollowing(true);
+    };
+
+    const fetchFollowStats = () => {
+        axios
+            .get(`http://localhost:5004/api/follow/followers/${userId}`)
+            .then((res) => setFollowers(res.data.length))
+            .catch(() => setFollowers(0));
+
+        axios
+            .get(`http://localhost:5004/api/follow/following/${userId}`)
+            .then((res) => setFollowing(res.data.length))
+            .catch(() => setFollowing(0));
+    };
 
     useEffect(() => {
         fetchPosts();
@@ -58,13 +84,62 @@ const MyPosts = () => {
         navigate(`/edit/${postId}`);
     };
 
+    const handleResetPassword = async () => {
+        try {
+            const res = await axios.post('http://localhost:5001/api/auth/reset-password', {
+                currentPassword,
+                newPassword
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            setResetMessage(res.data.msg || 'Password updated!');
+            setCurrentPassword('');
+            setNewPassword('');
+        } catch (err) {
+            setResetMessage(err.response?.data?.error || 'Password reset failed.');
+        }
+    };
+
     return (
         <div className="myposts-container">
-                  <div className="stats-bar">
-        <div className="stat-card"> <strong>{posts.length}</strong><br />Posts</div>
-        <div className="stat-card"> <strong>{followers}</strong><br />Followers</div>
-        <div className="stat-card"> <strong>{following}</strong><br />Following</div>
-      </div>
+            <div className="stats-bar">
+                <div className="stat-card"> <strong>{posts.length}</strong><br />Posts</div>
+                <div className="stat-card">
+                    <strong>{followers}</strong><br />
+                    <span onClick={openFollowers} style={{ cursor: 'pointer', textDecoration: 'underline' }}>Followers</span>
+                </div>
+                <div className="stat-card">
+                    <strong>{following}</strong><br />
+                    <span onClick={openFollowing} style={{ cursor: 'pointer', textDecoration: 'underline' }}>Following</span>
+                </div>
+            </div>
+            <FollowerModal isOpen={showFollowers} followers={followerList} onClose={() => setShowFollowers(false)} />
+            <FollowingModal isOpen={showFollowing} following={followingList} onClose={() => setShowFollowing(false)} />
+            <button onClick={() => setShowReset(true)} className="reset-pass-btn">
+                Reset Password
+            </button>
+            {showReset && (
+                <div className="reset-pass-form">
+                    <h3>Reset Your Password</h3>
+                    <input
+                        type="password"
+                        placeholder="Current Password"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                    />
+                    <input
+                        type="password"
+                        placeholder="New Password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                    <button onClick={handleResetPassword}>Submit</button>
+                    <button onClick={() => setShowReset(false)}>Cancel</button>
+                    {resetMessage && <p>{resetMessage}</p>}
+                </div>
+            )}
+
             <h2>My Blog Posts</h2>
             {message && <p className='success'> {message}</p>}
             {error && <p className="error">{error}</p>}
@@ -72,8 +147,12 @@ const MyPosts = () => {
                 posts.map((post) => (
                     <div key={post.id} className="mypost-card">
                         <h3>{post.title}</h3>
-                        <p><strong>Country:</strong> {post.country}</p>
-                        <p><strong>Date of Visit:</strong> {post.dateOfVisit}</p>
+                        <p>
+                            <strong>Country:</strong>{' '}
+                            <Link to={`/country/${encodeURIComponent(post.country)}`} className="country-link">
+                                {post.country}
+                            </Link>
+                        </p>                        <p><strong>Date of Visit:</strong> {post.dateOfVisit}</p>
                         <p>{post.content}</p>
                         <div className='button-row'>
                             <button className='edit-btn' onClick={() => handleEdit(post.id)}>Edit</button>

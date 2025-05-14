@@ -14,7 +14,6 @@ const BrowseBlogs = ({ isLoggedIn, myusername }) => {
     const [results, setResults] = useState([]);
     const [error, setError] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const [usernames, setUsernames] = useState([]);
 
     const postsPerPage = 5;
 
@@ -132,8 +131,6 @@ const BrowseBlogs = ({ isLoggedIn, myusername }) => {
                 </div>
             </div>
 
-
-
             {error && <p className="error">{error}</p>}
 
             <div className="results">
@@ -148,11 +145,13 @@ const BrowseBlogs = ({ isLoggedIn, myusername }) => {
                                 </Link>
                             </p>
 
-                            {isLoggedIn ? (<p>
-                                <strong>Author:</strong> {post.username || username}
-                                {(post.username || username) !== myusername && <FollowButton userId={post.userId} />}
-                            </p>
+                            {isLoggedIn ? (
+                                <p>
+                                    <strong>Author:</strong> {post.username || username}
+                                    {(post.username || username) !== myusername && <FollowButton userId={post.userId} />}
+                                </p>
                             ) : (<p><strong>Author:</strong> {post.username}</p>)}
+                            <p><strong>Date of Visit: </strong>{post.dateOfVisit}</p>
 
                             <p>{post.content}</p>
                             <LikeDislike postId={post.id} />

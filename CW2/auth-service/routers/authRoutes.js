@@ -1,6 +1,7 @@
 const express = require('express');
-const { register, login , username , getUserByUsername} = require('../controller/authController');
+const { register, login , username , getUserByUsername, getUserById,handleResetPassword} = require('../controller/authController');
 const router = express.Router();
+const verifyToken = require('../middleware/authMiddleware');
 
 
 /**
@@ -75,5 +76,9 @@ router.get('/:id', username);
 
 router.get('/users/username/:username', getUserByUsername);
 
+//userlist
+router.get('/users/:id', getUserById);
+
+router.post('/reset-password', verifyToken, handleResetPassword);
 
 module.exports= router;

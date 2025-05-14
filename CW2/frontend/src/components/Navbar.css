@@ -2,13 +2,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #121212; /* Charcoal black */
+  background-color: #121212; 
   padding: 12px 24px;
-  border-bottom: 1px solid #444444; /* Dark gray divider */
+  border-bottom: 1px solid #444444; 
 }
 
 .navbar-logo {
-  color: #E0E0E0; /* Light gray */
+  color: #E0E0E0; 
   font-size: 24px;
   font-weight: bold;
   margin: 0;
@@ -20,20 +20,20 @@
 }
 
 .navbar-link {
-  color: #B0B0B0; /* Medium gray */
+  color: #B0B0B0; 
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
 }
 
 .navbar-link:hover {
-  color: #E0E0E0; /* Light gray hover */
+  color: #E0E0E0; 
 }
 
 .navbar-button {
   background-color: transparent;
-  border: 1px solid #444444;
-  color: #888888; /* Soft gray */
+  border: 1px solid #8E1616;
+  color: #8E1616; 
   padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
@@ -41,7 +41,7 @@
 }
 
 .navbar-button:hover {
-  background-color: #222222;
+  background-color: #8E1616;
   color: #E0E0E0;
   border-color: #666666;
 }

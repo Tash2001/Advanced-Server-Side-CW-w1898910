@@ -4,7 +4,9 @@ const {
   getFollowersList,
   getFollowingList,
   getFollowingFeed,
-  isFollowing
+  isFollowing,
+  fetchFollowers,
+  fetchFollowings
 } = require('../services/followService');
 
 // Controller for follow
@@ -40,11 +42,31 @@ const getFollowingPosts = (req, res) => {
 
 const isFollowingUser = (req, res) => isFollowing(req, res);
 
+
+
+const getFollowersnameList = (req, res) => {
+  const userId = req.params.id;
+  fetchFollowers(userId, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(data);
+  });
+};
+
+const getFollowingsnameList = (req, res) => {
+  const userId = req.params.id;
+  fetchFollowings(userId, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(data);
+  });
+};
+
 module.exports = {
   followUser,
   unfollowUser,
   getFollowers,
   getFollowings,
   getFollowingPosts,
-  isFollowingUser
+  isFollowingUser,
+  getFollowersnameList,
+  getFollowingsnameList
 };

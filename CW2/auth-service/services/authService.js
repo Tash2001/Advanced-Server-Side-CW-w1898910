@@ -1,6 +1,7 @@
-const { createUser, findUserByEmail, findusername, findUserByUsername } = require("../daos/userDao");
+const { createUser, findUserByEmail, findusername, findUserByUsername, findUserById,findPasswordByUserId,updatePasswordByUserId} = require("../daos/userDao");
 const { hashPassword, comparePassword } = require("../utils/hashUtil");
 const { generatetoken } = require("../utils/jwtUtil");
+const bcrypt = require('bcrypt');
 
 
 const register = (req, res) => {
@@ -49,7 +50,37 @@ const getUserByUsername = (req, res) => {
     res.json(row);
   });
 };
+const getUserById = (req, res) => {
+  const id = req.params.id;
+  findUserById(id, (err, user) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json(user);
+  });
+};
+
+const resetPassword = (userId, currentPassword, newPassword, callback) => {
+  findPasswordByUserId(userId, (err, row) => {
+    if (err) return callback({ status: 500, message: err.message });
+    if (!row) return callback({ status: 404, message: 'User not found' });
+
+    bcrypt.compare(currentPassword, row.password, async (err, isMatch) => {
+      if (err || !isMatch)
+        return callback({ status: 400, message: 'Incorrect current password' });
+
+      try {
+        const hashed = await bcrypt.hash(newPassword, 10);
+        updatePasswordByUserId(hashed, userId, (err) => {
+          if (err) return callback({ status: 500, message: err.message });
+          return callback(null, 'Password reset successful');
+        });
+      } catch (hashError) {
+        return callback({ status: 500, message: 'Hashing failed' });
+      }
+    });
+  });
+};
 
 
 
-module.exports = { register, login, username, getUserByUsername };
+module.exports = { register, login, username, getUserByUsername,getUserById,resetPassword };

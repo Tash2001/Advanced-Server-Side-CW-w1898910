@@ -56,8 +56,7 @@
 }
 
 /* Button Styles */
-.search-block button,
-.reset-btn {
+.search-block button {
   padding: 10px 16px;
   background-color: #888;
   color: #121212;
@@ -69,20 +68,27 @@
   white-space: nowrap;
 }
 
-.search-block button:hover,
-.reset-btn:hover {
+.search-block button:hover {
   background-color: #aaa;
 }
 
 /* Reset Button */
 .reset-btn {
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
   background-color: #444;
-  color: #E0E0E0;
+  color: #8E1616;
   margin-left: auto;
+  border: 1px solid #8E1616;
 }
 
 .reset-btn:hover {
-  background-color: #666;
+  background-color: #8E1616;
+  color: #E0E0E0;
 }
 
 /* Blog Results Layout */
@@ -162,3 +168,22 @@
   font-weight: bold;
   box-shadow: 0 0 4px #888;
 }
+
+.sort-dropdown {
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+  color: #E0E0E0;
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-left: auto;
+  font-weight: bold;
+}
+.sort-select {
+  background-color: #1e1e1e;
+  color: #E0E0E0;
+  padding: 10px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
