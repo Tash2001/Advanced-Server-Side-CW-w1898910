@@ -9,6 +9,17 @@ This project is developed as part of the Advanced Server-Side coursework. It is 
 - SQLite
 - Docker & Docker Compose
 
+## Features
+
+-  User registration & login with JWT authentication
+-  API key generation for secure access to endpoints
+-  Search any country using [https://restcountries.com](https://restcountries.com)
+-  Usage logs and API key tracking (admin-only)
+-  Input validation with express-validator
+-  Admin panel (view users, keys, logs)
+-  Dockerized full-stack setup
+-  JWT expiry + session auto logout
+
 ## Project Structure
 
 ```
@@ -93,6 +104,19 @@ docker-compose build backend
 docker-compose build frontend
 
 ```
+##  Admin Access
+
+To access the admin panel, log in with:
+
+- **Email**: `admin@gmail.com`
+- **Password**: `admin123`
+
+Ensure that this user has `"role": "admin"` in the `users` table.
+
+The admin panel allows:
+- Viewing API usage logs
+- Viewing API keys
+- Viewing all registered users
 
 ## Notes
 
