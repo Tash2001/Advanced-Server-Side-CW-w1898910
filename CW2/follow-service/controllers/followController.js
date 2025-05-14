@@ -1,0 +1,72 @@
+const {
+  follow,
+  unfollow,
+  getFollowersList,
+  getFollowingList,
+  getFollowingFeed,
+  isFollowing,
+  fetchFollowers,
+  fetchFollowings
+} = require('../services/followService');
+
+// Controller for follow
+const followUser = (req, res) => {
+  follow(req, res);
+};
+
+// Controller for unfollow
+const unfollowUser = (req, res) => {
+  unfollow(req, res);
+};
+
+// Controller to get followers
+const getFollowers = (req, res) => {
+  getFollowersList(req, res);
+};
+
+// Controller to get followings
+const getFollowings = (req, res) => {
+  getFollowingList(req, res);
+};
+
+
+// Controller for feed of followed users
+const getFollowingPosts = (req, res) => {
+  const userId = req.user.id;
+
+  getFollowingFeed(userId, (err, posts) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(posts);
+  });
+};
+
+const isFollowingUser = (req, res) => isFollowing(req, res);
+
+
+
+const getFollowersnameList = (req, res) => {
+  const userId = req.params.id;
+  fetchFollowers(userId, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(data);
+  });
+};
+
+const getFollowingsnameList = (req, res) => {
+  const userId = req.params.id;
+  fetchFollowings(userId, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(data);
+  });
+};
+
+module.exports = {
+  followUser,
+  unfollowUser,
+  getFollowers,
+  getFollowings,
+  getFollowingPosts,
+  isFollowingUser,
+  getFollowersnameList,
+  getFollowingsnameList
+};
